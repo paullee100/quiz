@@ -18,15 +18,24 @@ body {
     padding: 30px;
 }
 
-.app h1 {
+.app .header {
     font-size: 25px;
     color: #001e4d;
     font-weight: 600;
+    display: flex;
     border-bottom: 1px solid #333;
     padding-bottom: 30px;
 }
+.app h1 {
+    flex-basis: 90%;
+}
+
+.app h2 {
+    flex-basis: 5%;
+}
 
 .quiz {
+    font-size: 30px;
     padding: 20px 0;
 }
 

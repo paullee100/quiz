@@ -4,13 +4,16 @@ const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
 const explanation = document.getElementById("explanation");
+const currentNum = document.getElementById("currentNum");
 
 let currentQuestionIndex = 0;
 let score = 0;
+let currentQuestionNum = 1;
 
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
+    currentQuestionNum = 1;
     nextButton.innerHTML = "Next";
     shuffle(questions)
     showQuestion();
@@ -18,6 +21,7 @@ function startQuiz() {
 
 function showQuestion() {
     resetState();
+    currentNum.innerHTML = `${currentQuestionNum}/${questions.length}`;
     let currentQuestion = questions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
@@ -72,6 +76,7 @@ function showScore() {
 
 function handleNextButton() {
     currentQuestionIndex++;
+    currentQuestionNum++;
     if (currentQuestionIndex < questions.length) {
         showQuestion();
     } else {
