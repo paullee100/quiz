@@ -32,41 +32,48 @@ function showQuestion() {
     let questionType = questions[currentQuestionIndex].type;
 
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
-    if (questionType === "multipleChoice") {
-        // If the question type is multiple choice
-        // Shuffle the answers of the current question
-        shuffle(currentQuestion.answers);
+    switch (questionType) {
+        case "multipleChoice":
+            // If the question type is multiple choice
+            // Shuffle the answers of the current question
+            shuffle(currentQuestion.answers);
 
-        // Create buttons equal to the number of available answers to the question
-        // Can be more than 4 or less
-        // Insert the multiple choice answers based on the index of the questions array
-        currentQuestion.answers.forEach(answer => {
+            // Create buttons equal to the number of available answers to the question
+            // Can be more than 4 or less
+            // Insert the multiple choice answers based on the index of the questions array
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add("btn");
+                answerButtons.appendChild(button);
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct;
+                }
+                button.addEventListener("click", selectAnswer);
+            });
+            break;
+        case "shortAnswer":
+            const input = document.createElement("input");
+            input.placeholder = "Type your answer in this box"
+            input.classList.add("inp");
             const button = document.createElement("button");
-            button.innerHTML = answer.text;
+            button.innerHTML = "Confirm";
+            button.disabled = true;
             button.classList.add("btn");
-            answerButtons.appendChild(button);
-            if (answer.correct) {
-                button.dataset.correct = answer.correct;
-            }
-            button.addEventListener("click", selectAnswer);
-        });
-    } else {
-        const input = document.createElement("input");
-        input.classList.add("inp");
-        const button = document.createElement("button");
-        button.innerHTML = "Confirm";
-        button.classList.add("btn");
-        answerButtons.append(input);
-        answerButtons.append(button);
-        button.dataset.answerlist = currentQuestion.answers;
-        input.addEventListener("input", function(e) {
-            if (input.value.length == 0) {
-                button.disabled = true;
-            } else {
-                button.disabled = false;
-            }
-        });
-        button.addEventListener("click", (e) => checkAnswer(e, input));
+
+            answerButtons.append(input);
+            answerButtons.append(button);
+            // get the keywords that answers the question.
+            button.dataset.answerlist = currentQuestion.answers;
+            input.addEventListener("input", function(e) {
+                if (input.value.length == 0) {
+                    button.disabled = true;
+                } else {
+                    button.disabled = false;
+                }
+            });
+            button.addEventListener("click", (e) => checkAnswer(e, input));
+            break;
     }
     // Add the explanation to the answer to the current question.
     explanation.innerHTML = currentQuestion.explanation;
@@ -81,7 +88,7 @@ function resetState() {
     }
 }
 
-// When selecting an answer
+// When selecting an answer in a multiple choice question
 function selectAnswer(e) {
     const selectedBtn = e.target;
     // Checks if the selected answer is correct.
@@ -109,6 +116,7 @@ function selectAnswer(e) {
     nextButton.style.display = "block";
 }
 
+// When selecting an answer in a short answer question
 function checkAnswer(e, textBox) {
     const confirmBtn = e.target;
     const answers = confirmBtn.dataset.answerlist.split(",");
@@ -123,9 +131,10 @@ function checkAnswer(e, textBox) {
             if (index > -1) answers.splice(index, 1);
         }
     });
+    // If the user gets a vast majority of the key word in their explanation, then they are correct.
     if (correctTerms/total >= 0.8) {
         textBox.classList.add("correct");
-
+        score++;
     } else {
         textBox.classList.add("incorrect");
     }
@@ -145,7 +154,7 @@ function checkAnswer(e, textBox) {
 // Final result to display the score that the user got after the quiz ended.
 function showScore() {
     resetState();
-    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!\n${Math.round((score/questions.length)*100)}%`
     nextButton.innerHTML = "Start Quiz Over";
     nextButton.style.display = "block";
 }

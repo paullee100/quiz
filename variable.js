@@ -9,43 +9,60 @@ for (let i = 0; i < 2; i++) {
     absoluteVal.push(Math.floor(Math.random() * 1000 * randomChance))
 }
 
-let total = 0;
-// Square Root Problems
-const squareRoot = [];
-for (let i = 0; i < 1; i++) {
-    let randomNum = Math.floor(Math.random() * 100);
-    for (let j = 0; j < randomNum; j++) {
-        total += 2*j+1;
+// Root Problems //
+function getRootProblems(power, max) {
+    let result = [];
+
+    while (result.length < 3) {
+        const x = Math.floor(Math.random() * (max-2+1)) + 2;
+        const val = Math.pow(x, power);
+        if (result.indexOf(val) === -1) result.push(val);
     }
-    squareRoot.push(total);
-    total = 0;
+    return result;
 }
-total = 1
-// Cube Root Problems
-const cubeRoot = [];
-for (let i = 0; i < 1; i++) {
-    let randomNum = Math.floor((Math.random() + 1) * 10);
-    for (let j = 0; j < 3; j++) {
-        total *= randomNum;
+const squareRoot = getRootProblems(2, 50);
+const cubeRoot = getRootProblems(3, 10);
+
+/** Prime Numbers **/
+const primeNumbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+const nonPrimeNumbers = [1, 4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, 32, 33, 34, 35, 36, 38, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58, 60, 62, 63, 64, 65, 66, 68, 69, 70, 72, 74, 75, 76, 77, 78, 80, 81, 82, 84, 85, 86, 87, 88, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100]
+
+const val = getRandom(nonPrimeNumbers, 3);
+
+function isPrime(n) {
+    // Check if n=1 or n=0
+    if (n <= 1) return false;
+    // Check if n=2 or n=3
+    if (n == 2 || n == 3) return true;
+    // Check whether n is divisible by 2 or 3
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    // Check from 5 to square root of n
+    // Iterate i by (i+6)
+    for (let i = 5; i <= Math.sqrt(n); i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
     }
-    cubeRoot.push(total);
-    total = 1;
+    return true;
 }
 
-// Fourth Root Problems
-const fourthRoot = [];
-for (let i = 0; i < 1; i++) {
-    let randomNum = Math.floor(Math.random() * 10);
-    for (let j = 0; j < 4; j++) {
-        total *= randomNum;
+// https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
+function getRandom(arr, n) {
+    let result = new Array(n),
+          len = arr.length,
+          taken = new Array(len);
+
+    if (n > len) throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        const x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
     }
-    fourthRoot.push(total);
-    total = 1;
+    return result;
 }
 
 // console.log(absoluteVal);
-// console.log(squareRoot);
-// console.log(cubeRoot);
+console.log(squareRoot);
+console.log(cubeRoot);
+// console.log(fourthRoot);
 
 export const questions = [
     {
@@ -64,12 +81,12 @@ export const questions = [
         type: "multipleChoice",
         question: "Which value is a prime number?",
         answers: [
-            { text: "11", correct: true},
-            { text: "4", correct: false},
-            { text: "10", correct: false},
-            { text: "100", correct: false}
+            { text: "" + primeNumbers[Math.floor(Math.random() * primeNumbers.length)], correct: true},
+            { text: "" + val[0], correct: false},
+            { text: "" + val[1], correct: false},
+            { text: "" + val[2], correct: false}
         ],
-        explanation: "A prime number is a number that can only be multiplied by itself, i.e., 11*1."
+        explanation: "A prime number is a whole number greater than 1 whose only factors are itself and 1"
     },
     {
         type: "multipleChoice",
@@ -87,9 +104,9 @@ export const questions = [
         question: "What is the value of " + square_root + "" + squareRoot[0] + "?",
         answers: [
             { text: "" + Math.sqrt(squareRoot[0]), correct: true},
-            { text: "" + Math.sqrt(squareRoot[0]) / 2, correct: false},
-            { text: "" + Math.sqrt(squareRoot[0]) + (squareRoot[0] % 100), correct: false},
-            { text: "" + squareRoot[0], correct: false},
+            { text: "" + (Math.sqrt(squareRoot[0])+Math.floor(Math.random() * 10)+1), correct: false},
+            { text: "" + (Math.sqrt(squareRoot[0])-Math.floor(Math.random() * 10)-1), correct: false},
+            { text: "" + (Math.sqrt(squareRoot[0])+Math.ceil(Math.random() * 10)+21), correct: false},
         ],
         explanation: Math.sqrt(squareRoot[0]) + " * " + Math.sqrt(squareRoot[0]) + " = " + squareRoot[0]
     },
@@ -98,7 +115,7 @@ export const questions = [
         question: "What is the value of " + cube_root + "" + cubeRoot[0] + "?",
         answers: [
             { text: "21", correct: false},
-            { text: "" + Math.sqrt(cubeRoot[0]), correct: false},
+            { text: "" + Math.round(Math.sqrt(cubeRoot[0])), correct: false},
             { text: "" + Math.cbrt(cubeRoot[0]), correct: true},
             { text: "40", correct: false},
         ],
@@ -130,12 +147,12 @@ export const questions = [
         type: "multipleChoice",
         question: "Which of the following values is a perfect square?",
         answers: [
-            { text: "12", correct: false},
-            { text: "25", correct: true},
-            { text: "143", correct: false},
-            { text: "24", correct: false}
+            { text: "" + (squareRoot[1]+Math.floor(Math.random()*10)+1), correct: false},
+            { text: "" + squareRoot[1], correct: true},
+            { text: "" + (squareRoot[1]+Math.floor(Math.random()*100)+2), correct: false},
+            { text: "" + (squareRoot[1]-Math.floor(Math.random()*10)+1), correct: false}
         ],
-        explanation: square_root + "25 = 5, which is an integer"
+        explanation: square_root + "" + squareRoot[1] + " =  " + Math.sqrt(squareRoot[1])  + ", which is an integer"
     },
     {
         type: "multipleChoice",
@@ -233,10 +250,29 @@ export const questions = [
     },
     {
         type: "shortAnswer",
-        question: "What is 9 + 10 * 2",
+        question: "What does 9 + 10 * 2 =?",
         answers: [
             "29",
         ],
         explanation: "Using PEMDAS, multiplication would come first, then addition\n 9 + 10 * 2 = 9 + 20 = 29"
+    },
+    {
+        type: "shortAnswer",
+        question: "How many prime numbers are between 1 and 10?",
+        answers: [
+            "4"
+        ],
+        explanation: "The prime numbers are 2, 3, 5, and 7."
+    },
+    {
+        type: "multipleChoice",
+        question: "What is the value of " + cube_root + "" + cubeRoot[1] + "?",
+        answers: [
+            { text: "" + Math.cbrt(cubeRoot[1]), correct: true},
+            { text: "" + Math.round(Math.sqrt(cubeRoot[1])), correct: false},
+            { text: "" + Math.round(Math.pow(cubeRoot[1], 1/4)), correct: false},
+            { text: "" + cubeRoot[1], correct: false}
+        ],
+        explanation: Math.cbrt(cubeRoot[1]) + " * " + Math.cbrt(cubeRoot[1]) + " * " + Math.cbrt(cubeRoot[1]) + " = " + (Math.cbrt(cubeRoot[1])*Math.cbrt(cubeRoot[1])) + " * " + Math.cbrt(cubeRoot[1]) + " = " + cubeRoot[1]
     }
 ];
