@@ -1,7 +1,7 @@
 // Generate Signs //
 const signs = [];
 let signCounter = 0;
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 64; i++) {
     let randomSign = Math.random() < 0.5 ? -1 : 1;
     signs.push(randomSign);
 }
@@ -21,7 +21,22 @@ function isPrime(n) {
     return true;
 }
 
-// Factor Problems //
+function getFactors(num) {
+    const factor = []
+    for (let i = 1; i <= num; i++) {
+        if (num % i == 0) {
+            factor.push(i);
+        }
+    }
+    return factor;
+}
+
+function divideUp(arr) {
+    const spot = (arr.length-1)*Math.random() | 0;
+    arr.splice(spot+1, 0, Math.floor((arr[spot]+arr[spot+1])/2) + 1);
+    return arr;
+}
+
 /**
  * 0 - factors
  * 1 - prime factors
@@ -76,6 +91,11 @@ function generateFactors(choice) {
                 num = [];
                 getNumA = Math.floor(Math.random()*(max-min+1))+min;
                 getNumB = Math.floor(Math.random()*(max-min+1))+min;
+
+                while (getNumB == getNumA) {
+                    getNumB = Math.floor(Math.random()*(max-min+1))+min;
+                }
+
                 num.push(getNumA, getNumB);
                 while (getNumB != 0) {
                     let temp = getNumB;
@@ -161,144 +181,172 @@ export const factorQuestions = [
     //     ],
     //     explanation: primeFactors[3][1].join('*') + " = " + primeFactors[3][0]
     // },
-    // {
-    //     type: "multipleChoice",
-    //     question: "What are the factors for " + factors[0][0] + "?",
-    //     answers: [
-    //         { text: factors[0][1], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
-    //     ],
-    //     explanation: factors[0][1].length % 2 == 1 ?
-    //     Array.from({ length: Math.floor(factors[0][1].length/2)+1}, (_, k) => factors[0][1][k] + "*" + factors[0][1][factors[0][1].length-1-k] + "=" + factors[0][0]).join('\n')
-    //     : Array.from({ length: Math.floor(factors[0][1].length/2)}, (_, k) => factors[0][1][k] + "*" + factors[0][1][factors[0][1].length-1-k] + "=" + factors[0][0]).join('\n')
-    // },
-    // {
-    //     type: "multipleChoice",
-    //     question: "What are the factors for " + factors[1][0] + "?",
-    //     answers: [
-    //         { text: factors[1][1], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
-    //     ],
-    //     explanation: factors[1][1].length % 2 == 1 ?
-    //     Array.from({ length: Math.floor(factors[1][1].length/2)+1}, (_, k) => factors[1][1][k] + "*" + factors[1][1][factors[1][1].length-1-k] + "=" + factors[1][0]).join('\n')
-    //     : Array.from({ length: Math.floor(factors[1][1].length/2)}, (_, k) => factors[1][1][k] + "*" + factors[1][1][factors[1][1].length-1-k] + "=" + factors[1][0]).join('\n')
-    // },
-    // {
-    //     type: "multipleChoice",
-    //     question: "What are the factors for " + factors[2][0] + "?",
-    //     answers: [
-    //         { text: factors[2][1], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
-    //     ],
-    //     explanation: factors[2][1].length % 2 == 1 ? 
-    //     Array.from({ length: Math.floor(factors[2][1].length/2)+1}, (_, k) => factors[2][1][k] + "*" + factors[2][1][factors[2][1].length-1-k] + "=" + factors[2][0]).join('\n')
-    //     : Array.from({ length: Math.floor(factors[2][1].length/2)}, (_, k) => factors[2][1][k] + "*" + factors[2][1][factors[2][1].length-1-k] + "=" + factors[2][0]).join('\n')
-    // },
-    // {
-    //     type: "multipleChoice",
-    //     question: "What are the factors for " + factors[3][0] + "?",
-    //     answers: [
-    //         { text: factors[3][1], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
-    //     ],
-    //     explanation: factors[3][1].length % 2 == 1 ?
-    //     Array.from({ length: Math.floor(factors[3][1].length/2)+1}, (_, k) => factors[3][1][k] + "*" + factors[3][1][factors[3][1].length-1-k] + "=" + factors[3][0]).join('\n')
-    //     : Array.from({ length: Math.floor(factors[3][1].length/2)}, (_, k) => factors[3][1][k] + "*" + factors[3][1][factors[3][1].length-1-k] + "=" + factors[3][0]).join('\n')
-    // },
     {
         type: "multipleChoice",
-        question: "What is the Greatest Common Factor for " + greatestCommonFactors[0][0] + " and " + greatestCommonFactors[0][1] + "?",
+        question: "What are the factors for " + factors[0][0] + "?",
         answers: [
-            { text: greatestCommonFactors[0][2], correct: true},
-            { text: "", correct: false},
-            { text: "", correct: false},
-            { text: "", correct: false}
+            { text: factors[0][1], correct: true},
+            { text: factors[0][1].length > 2 ? [factors[0][1][0], factors[0][1][factors[0][1].length-1]]: factors[0][1][1], correct: false},
+            { text: factors[0][1].length > 2 ? [factors[0][1].slice(0, factors[0][1].length-2), factors[0][1][factors[0][1].length-1]]: factors[0][1][0], correct: false},
+            { text: factors[0][1].length > 2 ? divideUp([...factors[0][1]]): [0, factors[0][1][factors[0][1].length-1]], correct: false}
         ],
-        explanation: ""
+        explanation: factors[0][1].length % 2 == 1 ?
+        Array.from({ length: Math.floor(factors[0][1].length/2)+1}, (_, k) => factors[0][1][k] + "*" + factors[0][1][factors[0][1].length-1-k] + "=" + factors[0][0]).join('\n')
+        : Array.from({ length: Math.floor(factors[0][1].length/2)}, (_, k) => factors[0][1][k] + "*" + factors[0][1][factors[0][1].length-1-k] + "=" + factors[0][0]).join('\n')
     },
     {
         type: "multipleChoice",
-        question: "What is the Greatest Common Factor for " + greatestCommonFactors[1][0] + " and " + greatestCommonFactors[1][1] + "?",
+        question: "What are the factors for " + factors[1][0] + "?",
         answers: [
-            { text: greatestCommonFactors[1][2], correct: true},
-            { text: "", correct: false},
-            { text: "", correct: false},
-            { text: "", correct: false}
+            { text: factors[1][1], correct: true},
+            { text: factors[1][1].length > 2 ? [factors[1][1][0], factors[1][1][factors[1][1].length-1]]: factors[1][1][1], correct: false},
+            { text: factors[1][1].length > 2 ? [factors[1][1].slice(0, factors[1][1].length-2), factors[1][1][factors[1][1].length-1]]: factors[1][1][0], correct: false},
+            { text: factors[1][1].length > 2 ? divideUp([...factors[1][1]]): [0, factors[1][1][factors[1][1].length-1]], correct: false}
         ],
-        explanation: ""
+        explanation: factors[1][1].length % 2 == 1 ?
+        Array.from({ length: Math.floor(factors[1][1].length/2)+1}, (_, k) => factors[1][1][k] + "*" + factors[1][1][factors[1][1].length-1-k] + "=" + factors[1][0]).join('\n')
+        : Array.from({ length: Math.floor(factors[1][1].length/2)}, (_, k) => factors[1][1][k] + "*" + factors[1][1][factors[1][1].length-1-k] + "=" + factors[1][0]).join('\n')
     },
     {
         type: "multipleChoice",
-        question: "What is the Greatest Common Factor for " + greatestCommonFactors[2][0] + " and " + greatestCommonFactors[2][1] + "?",
+        question: "What are the factors for " + factors[2][0] + "?",
         answers: [
-            { text: greatestCommonFactors[2][2], correct: true},
-            { text: "", correct: false},
-            { text: "", correct: false},
-            { text: "", correct: false}
+            { text: factors[2][1], correct: true},
+            { text: factors[2][1].length > 2 ? [factors[2][1][0], factors[2][1][factors[2][1].length-1]]: factors[2][1][1], correct: false},
+            { text: factors[2][1].length > 2 ? [factors[2][1].slice(0, factors[2][1].length-2), factors[2][1][factors[2][1].length-1]]: factors[2][1][0], correct: false},
+            { text: factors[2][1].length > 2 ? divideUp([...factors[2][1]]): [0, factors[2][1][factors[2][1].length-1]], correct: false}
         ],
-        explanation: ""
+        explanation: factors[2][1].length % 2 == 1 ? 
+        Array.from({ length: Math.floor(factors[2][1].length/2)+1}, (_, k) => factors[2][1][k] + "*" + factors[2][1][factors[2][1].length-1-k] + "=" + factors[2][0]).join('\n')
+        : Array.from({ length: Math.floor(factors[2][1].length/2)}, (_, k) => factors[2][1][k] + "*" + factors[2][1][factors[2][1].length-1-k] + "=" + factors[2][0]).join('\n')
     },
     {
         type: "multipleChoice",
-        question: "What is the Greatest Common Factor for " + greatestCommonFactors[3][0] + " and " + greatestCommonFactors[3][1] + "?",
+        question: "What are the factors for " + factors[3][0] + "?",
         answers: [
-            { text: greatestCommonFactors[3][2], correct: true},
-            { text: "", correct: false},
-            { text: "", correct: false},
-            { text: "", correct: false}
+            { text: factors[3][1], correct: true},
+            { text: factors[3][1].length > 2 ? [factors[3][1][0], factors[3][1][factors[3][1].length-1]]: factors[3][1][1], correct: false},
+            { text: factors[3][1].length > 2 ? [factors[3][1].slice(0, factors[3][1].length-2), factors[3][1][factors[3][1].length-1]]: factors[3][1][0], correct: false},
+            { text: factors[3][1].length > 2 ? divideUp([...factors[3][1]]): [0, factors[3][1][factors[3][1].length-1]], correct: false}
         ],
-        explanation: ""
-    }
+        explanation: factors[3][1].length % 2 == 1 ?
+        Array.from({ length: Math.floor(factors[3][1].length/2)+1}, (_, k) => factors[3][1][k] + "*" + factors[3][1][factors[3][1].length-1-k] + "=" + factors[3][0]).join('\n')
+        : Array.from({ length: Math.floor(factors[3][1].length/2)}, (_, k) => factors[3][1][k] + "*" + factors[3][1][factors[3][1].length-1-k] + "=" + factors[3][0]).join('\n')
+    },
+    // {
+    //     type: "multipleChoice",
+    //     question: "What is the Greatest Common Factor for " + greatestCommonFactors[0][0] + " and " + greatestCommonFactors[0][1] + "?",
+    //     answers: [
+    //         { text: greatestCommonFactors[0][2], correct: true},
+    //         { text: greatestCommonFactors[0][2]+signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[0][2]+2*signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[0][2]+3*signs[signCounter++], correct: false}
+    //     ],
+    //     explanation: "The factors for " + greatestCommonFactors[0][0] + " are " + getFactors(greatestCommonFactors[0][0]) + 
+    //                  " and the factors for " + greatestCommonFactors[0][1] + " are " + getFactors(greatestCommonFactors[0][1]) + 
+    //                  ". The largest number that " + greatestCommonFactors[0][0] + " and " + greatestCommonFactors[0][1] + " share is " +
+    //                  greatestCommonFactors[0][2]
+    // },
+    // {
+    //     type: "multipleChoice",
+    //     question: "What is the Greatest Common Factor for " + greatestCommonFactors[1][0] + " and " + greatestCommonFactors[1][1] + "?",
+    //     answers: [
+    //         { text: greatestCommonFactors[1][2], correct: true},
+    //         { text: greatestCommonFactors[1][2]+signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[1][2]-2*signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[1][2]-3*signs[signCounter++], correct: false}
+    //     ],
+    //     explanation: "The factors for " + greatestCommonFactors[1][0] + " are " + getFactors(greatestCommonFactors[1][0]) + 
+    //                  " and the factors for " + greatestCommonFactors[1][1] + " are " + getFactors(greatestCommonFactors[1][1]) + 
+    //                  ". The largest number that " + greatestCommonFactors[1][0] + " and " + greatestCommonFactors[1][1] + " share is " +
+    //                  greatestCommonFactors[1][2]
+    // },
+    // {
+    //     type: "multipleChoice",
+    //     question: "What is the Greatest Common Factor for " + greatestCommonFactors[2][0] + " and " + greatestCommonFactors[2][1] + "?",
+    //     answers: [
+    //         { text: greatestCommonFactors[2][2], correct: true},
+    //         { text: greatestCommonFactors[2][2]-signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[2][2]+2*signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[2][2]+3*signs[signCounter++], correct: false}
+    //     ],
+    //     explanation: "The factors for " + greatestCommonFactors[2][0] + " are " + getFactors(greatestCommonFactors[2][0]) + 
+    //                  " and the factors for " + greatestCommonFactors[2][1] + " are " + getFactors(greatestCommonFactors[2][1]) + 
+    //                  ". The largest number that " + greatestCommonFactors[2][0] + " and " + greatestCommonFactors[2][1] + " share is " +
+    //                  greatestCommonFactors[2][2]
+    // },
+    // {
+    //     type: "multipleChoice",
+    //     question: "What is the Greatest Common Factor for " + greatestCommonFactors[3][0] + " and " + greatestCommonFactors[3][1] + "?",
+    //     answers: [
+    //         { text: greatestCommonFactors[3][2], correct: true},
+    //         { text: greatestCommonFactors[3][2]+signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[3][2]-2*signs[signCounter++], correct: false},
+    //         { text: greatestCommonFactors[3][2]-3*signs[signCounter++], correct: false}
+    //     ],
+    //     explanation: "The factors for " + greatestCommonFactors[3][0] + " are " + getFactors(greatestCommonFactors[3][0]) + 
+    //                  " and the factors for " + greatestCommonFactors[3][1] + " are " + getFactors(greatestCommonFactors[3][1]) + 
+    //                  ". The largest number that " + greatestCommonFactors[3][0] + " and " + greatestCommonFactors[3][1] + " share is " +
+    //                  greatestCommonFactors[3][2]
+    // },
     // {
     //     type: "multipleChoice",
     //     question: "What is the Least Common Multiple for " + leastCommonMultiple[0][0] + " and " + leastCommonMultiple[0][1] + "?",
     //     answers: [
     //         { text: leastCommonMultiple[0][2], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
+    //         { text: leastCommonMultiple[0][2]+signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[0][2]+2*signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[0][2]+3*signs[signCounter++], correct: false}
     //     ],
-    //     explanation: ""
+    //     explanation: "The smallest number that both " + leastCommonMultiple[0][0] + 
+    //                  " and " + leastCommonMultiple[0][1] + " can divide into evenly is " +
+    //                  leastCommonMultiple[0][2] + ". Such that " + leastCommonMultiple[0][2] + " / " + leastCommonMultiple[0][0] + " = " + 
+    //                  (leastCommonMultiple[0][2]/leastCommonMultiple[0][0]) + " and " + leastCommonMultiple[0][2] + " / " + leastCommonMultiple[0][1] + 
+    //                  " = " + (leastCommonMultiple[0][2]/leastCommonMultiple[0][1]) + ". The result must be a whole number (integer)"
     // },
     // {
     //     type: "multipleChoice",
     //     question: "What is the Least Common Multiple for " + leastCommonMultiple[1][0] + " and " + leastCommonMultiple[1][1] + "?",
     //     answers: [
     //         { text: leastCommonMultiple[1][2], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
+    //         { text: leastCommonMultiple[1][2]-signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[1][2]+2*signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[1][2]+3*signs[signCounter++], correct: false}
     //     ],
-    //     explanation: ""
+    //     explanation: "The smallest number that both " + leastCommonMultiple[1][0] + 
+    //                  " and " + leastCommonMultiple[1][1] + " can divide into evenly is " +
+    //                  leastCommonMultiple[1][2] + ". Such that " + leastCommonMultiple[1][2] + " / " + leastCommonMultiple[1][0] + " = " + 
+    //                  (leastCommonMultiple[1][2]/leastCommonMultiple[1][0]) + " and " + leastCommonMultiple[1][2] + " / " + leastCommonMultiple[1][1] + 
+    //                  " = " + (leastCommonMultiple[1][2]/leastCommonMultiple[1][1]) + ". The result must be a whole number (integer)"
     // },
     // {
     //     type: "multipleChoice",
     //     question: "What is the Least Common Multiple for " + leastCommonMultiple[2][0] + " and " + leastCommonMultiple[2][1] + "?",
     //     answers: [
     //         { text: leastCommonMultiple[2][2], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
+    //         { text: leastCommonMultiple[2][2]-signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[2][2]+2*signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[2][2]-3*signs[signCounter++], correct: false}
     //     ],
-    //     explanation: ""
+    //     explanation: "The smallest number that both " + leastCommonMultiple[2][0] + 
+    //                  " and " + leastCommonMultiple[2][1] + " can divide into evenly is " +
+    //                  leastCommonMultiple[2][2] + ". Such that " + leastCommonMultiple[2][2] + " / " + leastCommonMultiple[2][0] + " = " + 
+    //                  (leastCommonMultiple[2][2]/leastCommonMultiple[2][0]) + " and " + leastCommonMultiple[2][2] + " / " + leastCommonMultiple[2][1] + 
+    //                  " = " + (leastCommonMultiple[2][2]/leastCommonMultiple[2][1]) + ". The result must be a whole number (integer)"
     // },
     // {
     //     type: "multipleChoice",
     //     question: "What is the Least Common Multiple for " + leastCommonMultiple[3][0] + " and " + leastCommonMultiple[3][1] + "?",
     //     answers: [
     //         { text: leastCommonMultiple[3][2], correct: true},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false},
-    //         { text: "", correct: false}
+    //         { text: leastCommonMultiple[3][2]-signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[3][2]-2*signs[signCounter++], correct: false},
+    //         { text: leastCommonMultiple[3][2]-3*signs[signCounter++], correct: false}
     //     ],
-    //     explanation: ""
+    //     explanation: "The smallest number that both " + leastCommonMultiple[3][0] + 
+    //                  " and " + leastCommonMultiple[3][1] + " can divide into evenly is " +
+    //                  leastCommonMultiple[3][2] + ". Such that " + leastCommonMultiple[3][2] + " / " + leastCommonMultiple[3][0] + " = " + 
+    //                  (leastCommonMultiple[3][2]/leastCommonMultiple[3][0]) + " and " + leastCommonMultiple[3][2] + " / " + leastCommonMultiple[3][1] + 
+    //                  " = " + (leastCommonMultiple[3][2]/leastCommonMultiple[3][1]) + ". The result must be a whole number (integer)"
     // }
 ];

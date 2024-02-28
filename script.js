@@ -59,7 +59,7 @@ function showQuestion() {
     let currentQuestion = factorQuestions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
     // Get the type of the question
-    let questionType = factorQuestions[currentQuestionIndex].type;
+    let questionType = currentQuestion.type;
 
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
     switch (questionType) {
