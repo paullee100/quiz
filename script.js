@@ -1,3 +1,7 @@
+import { definitionQuestions } from "./definitions.js";
+import { exponentQuestions } from "./exponents.js";
+import { primeNumberQuestions } from "./primeNumbers.js";
+import { pemdasQuestions } from "./pemdas.js";
 import { factorQuestions } from "./factors.js";
 
 const questionElement = document.getElementById("question");
@@ -10,6 +14,13 @@ let currentQuestionIndex = 0;
 let score = 0;
 let currentQuestionNum = 1;
 
+// User decides which quiz they want to take
+// All the current available quizzes
+const questions = []
+questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions);
+// Keep track of what quiz they are on.
+let quizId;
+
 // For fun to show how long the user takes to finish.
 let hour = 0;
 let minute = 0;
@@ -17,13 +28,33 @@ let second = 0;
 let count = 0;
 let timer = false;
 
-function startQuiz() {
+function chooseWhatToQuizOn() {
+    resetState();
+    questionElement.innerHTML = "Choose Which Quiz You Want To Study In, Marko"
+    createStartButtons('Definitions', 0);
+    createStartButtons('Exponents', 1);
+    createStartButtons('Prime Numbers', 2);
+    createStartButtons('PEMDAS', 3);
+    createStartButtons('Factors', 4);
+
+}
+
+function createStartButtons(quizName, quizNum) {
+    const quizButton = document.createElement('button');
+    quizButton.innerHTML = quizName;
+    quizButton.classList.add('btn');
+    quizButton.addEventListener('click', () => startQuiz(quizNum));
+    answerButtons.appendChild(quizButton)
+}
+
+function startQuiz(quizNum) {
+    quizId = quizNum;
     currentQuestionIndex = 0;
     score = 0;
     currentQuestionNum = 1;
     nextButton.innerHTML = "Next";
-    shuffle(factorQuestions)
-    showQuestion();
+    shuffle(questions[quizId]);
+    showQuestion(questions[quizId]);
     timer = true;
     startStopWatch();
 }
@@ -50,13 +81,13 @@ function startStopWatch() {
 }
 
 // Create the question one at a time
-function showQuestion() {
+function showQuestion(quizCategory) {
     resetState();
     // A way to display the current question that the user is in
     // Displays the total number of questions to the user.
-    currentNum.innerHTML = `${currentQuestionNum}/${factorQuestions.length}`;
+    currentNum.innerHTML = `${currentQuestionNum}/${quizCategory.length}`;
     // Gets the current question from the array.
-    let currentQuestion = factorQuestions[currentQuestionIndex];
+    let currentQuestion = quizCategory[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
     // Get the type of the question
     let questionType = currentQuestion.type;
@@ -188,7 +219,7 @@ function showScore() {
     const hourString = hour < 10 ? "0" + hour: hour;
     const minuteString = minute < 10 ? "0" + minute: minute;
     const secondString = second < 10 ? "0" + second: second;
-    questionElement.innerHTML = `You scored ${score} out of ${factorQuestions.length}!\n${Math.round((score/factorQuestions.length)*100)}%`
+    questionElement.innerHTML = `You scored ${score} out of ${questions[quizId].length}!\n${Math.round((score/questions[quizId].length)*100)}%`
     questionElement.style.textAlign = 'center';
 
     const statement = document.createElement('h2');
@@ -219,8 +250,8 @@ function handleNextButton() {
     currentQuestionNum++;
     // Check whether or not there are any more questions left
     // If not, show the final score.
-    if (currentQuestionIndex < factorQuestions.length) {
-        showQuestion();
+    if (currentQuestionIndex < questions[quizId].length) {
+        showQuestion(questions[quizId]);
     } else {
         showScore();
     }
@@ -228,7 +259,7 @@ function handleNextButton() {
 
 // Handles the button to display the next button.
 nextButton.addEventListener("click", () => {
-    if (currentQuestionIndex < factorQuestions.length) {
+    if (currentQuestionIndex < questions[quizId].length) {
         handleNextButton();
     } else {
         // startQuiz();
@@ -258,4 +289,5 @@ function shuffle(array) {
 }
 
 // Driver Function
-startQuiz();
+// startQuiz();
+chooseWhatToQuizOn();
