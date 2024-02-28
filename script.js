@@ -1,4 +1,4 @@
-import { questions } from "./variable.js";
+import { factorQuestions } from "./factors.js";
 
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
@@ -10,13 +10,43 @@ let currentQuestionIndex = 0;
 let score = 0;
 let currentQuestionNum = 1;
 
+// For fun to show how long the user takes to finish.
+let hour = 0;
+let minute = 0;
+let second = 0;
+let count = 0;
+let timer = false;
+
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     currentQuestionNum = 1;
     nextButton.innerHTML = "Next";
-    shuffle(questions)
+    shuffle(factorQuestions)
     showQuestion();
+    timer = true;
+    startStopWatch();
+}
+
+function startStopWatch() {
+    if (timer) {
+        count++;
+
+        if (count == 100) {
+            second++;
+            count = 0;
+        }
+        if (second == 60) {
+            minute++;
+            second = 0;
+        }
+        if (minute == 60) {
+            hour++;
+            minute = 0;
+            second = 0;
+        }
+        setTimeout(startStopWatch, 10);
+    }
 }
 
 // Create the question one at a time
@@ -24,12 +54,12 @@ function showQuestion() {
     resetState();
     // A way to display the current question that the user is in
     // Displays the total number of questions to the user.
-    currentNum.innerHTML = `${currentQuestionNum}/${questions.length}`;
+    currentNum.innerHTML = `${currentQuestionNum}/${factorQuestions.length}`;
     // Gets the current question from the array.
-    let currentQuestion = questions[currentQuestionIndex];
+    let currentQuestion = factorQuestions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
     // Get the type of the question
-    let questionType = questions[currentQuestionIndex].type;
+    let questionType = factorQuestions[currentQuestionIndex].type;
 
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
     switch (questionType) {
@@ -154,7 +184,30 @@ function checkAnswer(e, textBox) {
 // Final result to display the score that the user got after the quiz ended.
 function showScore() {
     resetState();
-    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!\n${Math.round((score/questions.length)*100)}%`
+    timer = false;
+    const hourString = hour < 10 ? "0" + hour: hour;
+    const minuteString = minute < 10 ? "0" + minute: minute;
+    const secondString = second < 10 ? "0" + second: second;
+    questionElement.innerHTML = `You scored ${score} out of ${factorQuestions.length}!\n${Math.round((score/factorQuestions.length)*100)}%`
+    questionElement.style.textAlign = 'center';
+
+    const statement = document.createElement('h2');
+    statement.innerHTML = 'You took: ';
+    statement.style.textAlign = 'center';
+
+    const timeElement = document.createElement('h2');
+    timeElement.innerHTML = hourString + ":" + minuteString + ":" + secondString;
+    timeElement.style.textAlign = 'center';
+    
+    const secondStatement = document.createElement('h2');
+    secondStatement.innerHTML = 'to finish the quiz!';
+    secondStatement.style.textAlign = 'center';
+
+    answerButtons.appendChild(statement);
+    answerButtons.appendChild(timeElement);
+    answerButtons.appendChild(secondStatement);
+    answerButtons.style.marginTop = '30px';
+
     nextButton.innerHTML = "Start Quiz Over";
     nextButton.style.display = "block";
 }
@@ -162,11 +215,11 @@ function showScore() {
 function handleNextButton() {
     // Increment counter to get the next question in the array.
     currentQuestionIndex++;
-    // Increment counter to get the current question number.
+    // Increment counter to update the current question number.
     currentQuestionNum++;
     // Check whether or not there are any more questions left
     // If not, show the final score.
-    if (currentQuestionIndex < questions.length) {
+    if (currentQuestionIndex < factorQuestions.length) {
         showQuestion();
     } else {
         showScore();
@@ -175,7 +228,7 @@ function handleNextButton() {
 
 // Handles the button to display the next button.
 nextButton.addEventListener("click", () => {
-    if (currentQuestionIndex < questions.length) {
+    if (currentQuestionIndex < factorQuestions.length) {
         handleNextButton();
     } else {
         // startQuiz();
