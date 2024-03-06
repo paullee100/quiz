@@ -20,7 +20,7 @@ let totalQuestions = 0;
 // User decides which quiz they want to take
 // All the current available quizzes
 const questions = []
-questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions, ["Time Table"]);
+questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions);
 // Keep track of what quiz they are on.
 let quizId;
 
