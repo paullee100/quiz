@@ -4,6 +4,7 @@ import { primeNumberQuestions } from "./primeNumbers.js";
 import { pemdasQuestions } from "./pemdas.js";
 import { factorQuestions } from "./factors.js";
 
+const app = document.getElementById("app");
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
@@ -12,12 +13,14 @@ const currentNum = document.getElementById("currentNum");
 
 let currentQuestionIndex = 0;
 let score = 0;
+let totalScore = 0;
 let currentQuestionNum = 1;
+let totalQuestions = 0;
 
 // User decides which quiz they want to take
 // All the current available quizzes
 const questions = []
-questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions);
+questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions, ["Time Table"]);
 // Keep track of what quiz they are on.
 let quizId;
 
@@ -31,32 +34,105 @@ let timer = false;
 function chooseWhatToQuizOn() {
     resetState();
     questionElement.innerHTML = "Choose Which Quiz You Want To Study In, Marko"
+    createStartButtons('Multiplication Table', -1)
     createStartButtons('Definitions', 0);
     createStartButtons('Exponents', 1);
     createStartButtons('Prime Numbers', 2);
     createStartButtons('PEMDAS', 3);
     createStartButtons('Factors', 4);
-
 }
 
 function createStartButtons(quizName, quizNum) {
     const quizButton = document.createElement('button');
     quizButton.innerHTML = quizName;
     quizButton.classList.add('btn');
-    quizButton.addEventListener('click', () => startQuiz(quizNum));
+    if (quizNum > -1) {
+        quizButton.addEventListener('click', () => startQuiz(quizNum));
+    } else {
+        quizButton.addEventListener('click', createTimeTable);
+    }
     answerButtons.appendChild(quizButton)
 }
 
 function startQuiz(quizNum) {
+    includeAddEventListenerToNextButton();
     quizId = quizNum;
     currentQuestionIndex = 0;
     score = 0;
+    totalScore = questions[quizId].length;
     currentQuestionNum = 1;
+    totalQuestions = questions[quizId].length;
     nextButton.innerHTML = "Next";
     shuffle(questions[quizId]);
     showQuestion(questions[quizId]);
     timer = true;
     startStopWatch();
+}
+
+function createTimeTable() {
+    resetState();
+    app.style.width = '750px';
+    app.style.maxWidth = '750px';
+    totalScore = 144;
+    totalQuestions = 1;
+    currentNum.innerHTML = '1/1';
+    questionElement.innerHTML = 'Fill in the multiplication table';
+    const container = document.createElement('div');
+    
+    for (let i = 0; i < 13; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.id = 'row' + i;
+
+        for (let j = 0; j < 13; j++) {
+            let box;
+            if (i == 0 || j == 0) {
+                box = document.createElement('div');
+                box.className ='box';
+                box.innerHTML = `${i+j}`;
+            } else {
+                box = document.createElement('input');
+                box.className ='box';
+                box.classList.add('timeinput');
+            }
+            box.setAttribute('autocomplete', 'off');
+            box.id = 'box' + (i*j);
+            row.appendChild(box);
+        }
+
+        container.appendChild(row);
+    }
+
+    answerButtons.appendChild(container);
+
+    timer = true;
+    startStopWatch();
+    nextButton.style.display = "block";
+    nextButton.addEventListener('click', finishTimeTable);
+}
+
+function finishTimeTable() {
+    if (!confirm('Click "OK" to see your final result')) {
+        return;
+    }
+    const table = answerButtons.firstChild;
+    // Get the rows of the gridbox table
+    for (let i = 1; i < table.childNodes.length; i++) {
+        const row = table.childNodes[i];
+        // Get the column for the boxes in the current row
+        for (let j = 1; j < table.childNodes.length; j++) {
+            if (parseInt(row.childNodes[j].value, 10) === i*j) {
+                row.childNodes[j].classList.add("correct");
+                score++;
+            } else {
+                row.childNodes[j].classList.add("incorrect");
+            }
+            row.childNodes[j].disabled = true;
+        }
+    }
+    nextButton.innerHTML = 'See Final Result'
+    nextButton.removeEventListener('click', finishTimeTable);
+    includeAddEventListenerToNextButton();
 }
 
 function startStopWatch() {
@@ -219,7 +295,7 @@ function showScore() {
     const hourString = hour < 10 ? "0" + hour: hour;
     const minuteString = minute < 10 ? "0" + minute: minute;
     const secondString = second < 10 ? "0" + second: second;
-    questionElement.innerHTML = `You scored ${score} out of ${questions[quizId].length}!\n${Math.round((score/questions[quizId].length)*100)}%`
+    questionElement.innerHTML = `You scored ${score} out of ${totalScore}!\n${Math.round((score/totalScore)*100)}%`
     questionElement.style.textAlign = 'center';
 
     const statement = document.createElement('h2');
@@ -250,22 +326,24 @@ function handleNextButton() {
     currentQuestionNum++;
     // Check whether or not there are any more questions left
     // If not, show the final score.
-    if (currentQuestionIndex < questions[quizId].length) {
+    if (currentQuestionIndex < totalQuestions) {
         showQuestion(questions[quizId]);
     } else {
         showScore();
     }
 }
 
-// Handles the button to display the next button.
-nextButton.addEventListener("click", () => {
-    if (currentQuestionIndex < questions[quizId].length) {
-        handleNextButton();
-    } else {
-        // startQuiz();
-        location.reload();
-    }
-});
+function includeAddEventListenerToNextButton() {
+    // Handles the button to display the next button.
+    nextButton.addEventListener("click", () => {
+        if (currentQuestionIndex < totalQuestions) {
+            handleNextButton();
+        } else {
+            // startQuiz();
+            location.reload();
+        }
+    });
+}
 
 /**
  * Shuffling using the Fisher-Yates Shuffle or Knuth Shuffle.

@@ -105,3 +105,30 @@ body {
 .incorrect {
     background: #ff9393;
 }
+
+.row {
+    border: 1px solid black;
+    height: 100%;
+    line-height: 1em;
+}
+
+.box {
+    display: inline-grid;
+    width: 7.69230769231%;
+    height: 100%;
+    font-size: 30px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.timeinput {
+    color: #222;
+    font-weight: 300;
+    font-size: 28px;
+    border: 1px solid black;
+    height: 100%;
+
+    text-align: center;
+}
