@@ -71,32 +71,32 @@ function startQuiz(quizNum) {
 
 function createTimeTable() {
     resetState();
-    app.style.width = '750px';
-    app.style.maxWidth = '750px';
+    app.style.width = '1000px';
+    app.style.maxWidth = '1000px';
     totalScore = 144;
     totalQuestions = 1;
     currentNum.innerHTML = '1/1';
     questionElement.innerHTML = 'Fill in the multiplication table';
-    const container = document.createElement('div');
+    const container = document.createElement('table');
     
     for (let i = 0; i < 13; i++) {
-        const row = document.createElement('div');
+        const row = document.createElement('tr');
         row.className = 'row';
         row.id = 'row' + i;
 
         for (let j = 0; j < 13; j++) {
-            let box;
+            let box = document.createElement('td');
+            // box.className ='box';
+            let content;
             if (i == 0 || j == 0) {
-                box = document.createElement('div');
-                box.className ='box';
-                box.innerHTML = `${i+j}`;
+                content = document.createElement('div');
+                content.innerHTML = `${i+j}`;
             } else {
-                box = document.createElement('input');
-                box.className ='box';
-                box.classList.add('timeinput');
+                content = document.createElement('input');
+                content.classList.add('timeinput');
             }
-            box.setAttribute('autocomplete', 'off');
-            box.id = 'box' + (i*j);
+            // content.setAttribute('autocomplete', 'off');
+            box.appendChild(content);
             row.appendChild(box);
         }
 
@@ -105,29 +105,94 @@ function createTimeTable() {
 
     answerButtons.appendChild(container);
 
+    for (let i = 1; i < container.rows.length; i++) {
+        container.rows[i].addEventListener('click', function(event) {
+            removeHighlightedRowAndColumns()
+
+            // Add ROW highlight
+            container.rows[i].classList.add('highlighted_row');
+
+            // Add COLUMN highlight
+            const clickedCell = event.target;
+            const cell = clickedCell.parentElement;
+            const columnIndex = cell.cellIndex;
+
+            for (let i = 0; i < container.rows.length; i++) {
+                const row = container.rows[i];
+                const cell = row.cells[columnIndex];
+                cell.classList.add('highlighted_col');
+                if (i == 0) {
+                    cell.style.borderTop="3px solid red";
+                } else if (i == container.children.length-1) {
+                    cell.style.borderBottom="3px solid red"
+                }
+            }
+        });
+    }
+
     timer = true;
     startStopWatch();
     nextButton.style.display = "block";
     nextButton.addEventListener('click', finishTimeTable);
+    document.addEventListener('click', function(event) {
+        let flag = true;
+        const inputs = document.getElementsByClassName('timeinput');
+        for (let i = 0; i < inputs.length; i++) {
+            if (event.target === inputs[i]) {
+                flag =false;
+                break;
+            }
+        }
+        if (flag) {
+            removeHighlightedRowAndColumns();
+        }
+    });
+}
+
+function removeHighlightedRowAndColumns() {
+    const container = answerButtons.firstChild;
+    // Remove ROW highlight
+    for (let i of container.childNodes) {
+        if (i.classList.contains('highlighted_row')) {
+            i.classList.remove('highlighted_row');
+        }
+    }
+        
+        // Remove COLUMN highlight
+    for (let i of container.childNodes) {
+        for (let j of i.childNodes) {
+            if (j.classList.contains('highlighted_col')) {
+                j.classList.remove('highlighted_col');
+                j.style.borderTop='none';
+                j.style.borderBottom='none';
+            }
+        }
+    };
 }
 
 function finishTimeTable() {
+    timer = false;
     if (!confirm('Click "OK" to see your final result')) {
+        timer = true;
         return;
     }
     const table = answerButtons.firstChild;
+    removeHighlightedRowAndColumns(table);
     // Get the rows of the gridbox table
-    for (let i = 1; i < table.childNodes.length; i++) {
-        const row = table.childNodes[i];
+    for (let i = 1; i < table.rows.length; i++) {
+
+        const row = table.rows[i];
         // Get the column for the boxes in the current row
-        for (let j = 1; j < table.childNodes.length; j++) {
-            if (parseInt(row.childNodes[j].value, 10) === i*j) {
-                row.childNodes[j].classList.add("correct");
+        for (let j = 1; j < row.cells.length; j++) {
+            console.log(row.cells[j]);
+            console.log(row.cells[j].firstChild);
+            if (parseInt(row.cells[j].firstChild.value, 10) === i*j) {
+                row.cells[j].firstChild.classList.add("correct");
                 score++;
             } else {
-                row.childNodes[j].classList.add("incorrect");
+                row.cells[j].firstChild.classList.add("incorrect");
             }
-            row.childNodes[j].disabled = true;
+            row.cells[j].firstChild.disabled = true;
         }
     }
     nextButton.innerHTML = 'See Final Result'

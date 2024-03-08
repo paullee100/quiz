@@ -106,13 +106,25 @@ body {
     background: #ff9393;
 }
 
+/* Multiplication Table */
 .row {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     height: 100%;
     line-height: 1em;
 }
 
-.box {
+.highlighted_row {
+    border: 3px solid red;
+}
+
+.highlighted_col {
+    border: 3px solid red;
+    border-top: none;
+    border-bottom: none;
+    border-collapse: collapse;
+}
+
+/* .box {
     display: inline-grid;
     width: 7.69230769231%;
     height: 100%;
@@ -121,14 +133,28 @@ body {
     border: 1px solid black;
     border-radius: 4px;
     text-align: center;
+ } */
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
 }
+
+td {
+    width: 50%;
+}
+
+/* td input {
+    position: relative;
+    z-index: 1;
+} */
 
 .timeinput {
     color: #222;
     font-weight: 300;
     font-size: 28px;
-    border: 1px solid black;
     height: 100%;
-
+    width: 100%;
     text-align: center;
 }
