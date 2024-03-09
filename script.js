@@ -99,7 +99,7 @@ function createTimeTable() {
             } else {
                 content = document.createElement('input');
                 content.type="number";
-                content.inputMode="numeric";
+                content.inputMode="search";
                 content.classList.add('timeinput');
             }
             content.setAttribute('autocomplete', 'off');
@@ -120,7 +120,7 @@ function createTimeTable() {
     nextButton.addEventListener('click', finishTimeTable);
 
     document.addEventListener('keydown', function(event) {
-        if (event.key === "Tab") {
+        if (event.key === "Tab" || event.key === "Enter") {
 
             setTimeout(() => {
                 const selectedCell = document.activeElement;
