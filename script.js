@@ -80,6 +80,7 @@ function createTimeTable() {
     totalQuestions = 1;
     currentNum.innerHTML = '1/1';
     questionElement.innerHTML = 'Fill in the multiplication table';
+
     const container = document.createElement('table');
     
     for (let i = 0; i < ROW; i++) {
@@ -89,7 +90,6 @@ function createTimeTable() {
 
         for (let j = 0; j < COL; j++) {
             let box = document.createElement('td');
-            // box.className ='box';
             let content;
             if (i == 0 || j == 0) {
                 content = document.createElement('div');
@@ -176,9 +176,9 @@ function addHighlightedRowAndColumnsByClick() {
             container.rows[i].classList.add('highlighted_row');
 
             // Add COLUMN highlight
-            const clickedCell = event.target;
-            const cell = clickedCell.parentElement;
-            const columnIndex = cell.cellIndex;
+            const clickedCell = event.target; // Gets the input element
+            const cell = clickedCell.parentElement; // Gets the table data element
+            const columnIndex = cell.cellIndex; // Gets column index of the row
 
             for (let i = 0; i < container.rows.length; i++) {
                 const row = container.rows[i];
@@ -200,6 +200,7 @@ function removeHighlightedRowAndColumns() {
     for (let i of container.childNodes) {
         if (i.classList.contains('highlighted_row')) {
             i.classList.remove('highlighted_row');
+            break; // only one row will contain this class item
         }
     }
         
@@ -208,8 +209,8 @@ function removeHighlightedRowAndColumns() {
         for (let j of i.childNodes) {
             if (j.classList.contains('highlighted_col')) {
                 j.classList.remove('highlighted_col');
-                j.style.borderTop='none';
-                j.style.borderBottom='none';
+                j.style.borderTop='none'; // for the top portion
+                j.style.borderBottom='none'; // for the bottom portion
             }
         }
     };
@@ -229,8 +230,6 @@ function finishTimeTable() {
         const row = table.rows[i];
         // Get the column for the boxes in the current row
         for (let j = 1; j < row.cells.length; j++) {
-            console.log(row.cells[j]);
-            console.log(row.cells[j].firstChild);
             if (parseInt(row.cells[j].firstChild.value, 10) === i*j) {
                 row.cells[j].firstChild.classList.add("correct");
                 score++;
@@ -477,5 +476,4 @@ function shuffle(array) {
 }
 
 // Driver Function
-// startQuiz();
 chooseWhatToQuizOn();
