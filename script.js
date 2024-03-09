@@ -71,6 +71,9 @@ function startQuiz(quizNum) {
 
 function createTimeTable() {
     resetState();
+    const ROW = 13,
+          COL = 13
+
     app.style.width = '1000px';
     app.style.maxWidth = '1000px';
     totalScore = 144;
@@ -79,23 +82,24 @@ function createTimeTable() {
     questionElement.innerHTML = 'Fill in the multiplication table';
     const container = document.createElement('table');
     
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < ROW; i++) {
         const row = document.createElement('tr');
         row.className = 'row';
         row.id = 'row' + i;
 
-        for (let j = 0; j < 13; j++) {
+        for (let j = 0; j < COL; j++) {
             let box = document.createElement('td');
             // box.className ='box';
             let content;
             if (i == 0 || j == 0) {
                 content = document.createElement('div');
                 content.innerHTML = `${i+j}`;
+                content.style.textAlign='center';
             } else {
                 content = document.createElement('input');
                 content.classList.add('timeinput');
             }
-            // content.setAttribute('autocomplete', 'off');
+            content.setAttribute('autocomplete', 'off');
             box.appendChild(content);
             row.appendChild(box);
         }
@@ -105,6 +109,65 @@ function createTimeTable() {
 
     answerButtons.appendChild(container);
 
+    addHighlightedRowAndColumnsByClick();
+
+    timer = true;
+    startStopWatch();
+    nextButton.style.display = "block";
+    nextButton.addEventListener('click', finishTimeTable);
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Tab") {
+
+            setTimeout(() => {
+                const selectedCell = document.activeElement;
+                removeHighlightedRowAndColumns();
+                addHighlightedRowAndColumnsByTab(selectedCell);
+            }, 0);
+        }
+    })
+
+    document.addEventListener('click', function(event) {
+        let flag = true;
+        const inputs = document.getElementsByClassName('timeinput');
+        for (let i = 0; i < inputs.length; i++) {
+            if (event.target === inputs[i]) {
+                flag=false;
+                break;
+            }
+        }
+        if (flag) {
+            removeHighlightedRowAndColumns();
+        }
+    });
+}
+
+function addHighlightedRowAndColumnsByTab(eventTarget) {
+    const container = answerButtons.firstChild;
+
+    // Add ROW highlight
+    const tabbedCell = eventTarget; // Gets the input element
+    const cell = tabbedCell.parentElement; // Gets the table data element
+    const row = cell.parentElement; // Gets the row element
+
+    row.classList.add('highlighted_row');
+
+    // Add COLUMN highlight
+    const columnIndex = cell.cellIndex; // Gets column index of the row
+    for (let i = 0; i < container.rows.length; i++) {
+        const row = container.rows[i];
+        const cell = row.cells[columnIndex];
+        cell.classList.add('highlighted_col');
+        if (i == 0) {
+            cell.style.borderTop="3px solid red";
+        } else if (i == container.children.length-1) {
+            cell.style.borderBottom="3px solid red"
+        }
+    }
+}
+
+function addHighlightedRowAndColumnsByClick() {
+    const container = answerButtons.firstChild;
     for (let i = 1; i < container.rows.length; i++) {
         container.rows[i].addEventListener('click', function(event) {
             removeHighlightedRowAndColumns()
@@ -129,24 +192,6 @@ function createTimeTable() {
             }
         });
     }
-
-    timer = true;
-    startStopWatch();
-    nextButton.style.display = "block";
-    nextButton.addEventListener('click', finishTimeTable);
-    document.addEventListener('click', function(event) {
-        let flag = true;
-        const inputs = document.getElementsByClassName('timeinput');
-        for (let i = 0; i < inputs.length; i++) {
-            if (event.target === inputs[i]) {
-                flag =false;
-                break;
-            }
-        }
-        if (flag) {
-            removeHighlightedRowAndColumns();
-        }
-    });
 }
 
 function removeHighlightedRowAndColumns() {
