@@ -21,6 +21,7 @@ let totalQuestions = 0;
 // All the current available quizzes
 const questions = []
 questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions);
+
 // Keep track of what quiz they are on.
 let quizId;
 
@@ -97,6 +98,8 @@ function createTimeTable() {
                 content.style.textAlign='center';
             } else {
                 content = document.createElement('input');
+                content.type="number";
+                content.inputMode="numeric";
                 content.classList.add('timeinput');
             }
             content.setAttribute('autocomplete', 'off');

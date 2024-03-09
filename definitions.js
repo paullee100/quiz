@@ -62,7 +62,7 @@ export const definitionQuestions = [
             { text: "is a superscript number placed next to another number at the top right.", correct: false},
             { text: "cannot be written as fractions or decimals because the number of decimal places is infinite and there is no recurring pattern of digits within the number.", correct: false},
             { text: "include all integers, decimals, and fractions. Any terminating or repeating decimal number is a rational number.", correct: true},
-            { texT: "cannot be written as fractions or decimals because the number of a decimal places is infinite and there is no recurring pattern or digits within the number.", correct: false}
+            { text: "are the basic building blocks of mathematics.", correct: false}
         ],
         explanation: "Definition is the green answer"
     },
@@ -77,5 +77,4 @@ export const definitionQuestions = [
         ],
         explanation: "Definition is the green answer"
     },
-
 ];
