@@ -117,10 +117,13 @@ function createTimeTable() {
     timer = true;
     startStopWatch();
     nextButton.style.display = "block";
+
+    // Set up the button to finish the quiz.
     nextButton.addEventListener('click', finishTimeTable);
 
+    // When the user presses tab to move to next cell.
     document.addEventListener('keydown', function(event) {
-        if (event.key === "Tab" || event.key === "Enter") {
+        if (event.key === "Tab") {
 
             setTimeout(() => {
                 const selectedCell = document.activeElement;
@@ -128,8 +131,13 @@ function createTimeTable() {
                 addHighlightedRowAndColumnsByTab(selectedCell);
             }, 0);
         }
-    })
+    });
 
+    document.addEventListener('blur', function(event) {
+        alert("Hello!");
+    });
+
+    // When the user manually clicks on a cell.
     document.addEventListener('click', function(event) {
         let flag = true;
         const inputs = document.getElementsByClassName('timeinput');
@@ -220,7 +228,7 @@ function removeHighlightedRowAndColumns() {
 }
 
 function finishTimeTable() {
-    timer = false;
+    timer = false; // pauses the timer
     if (!confirm('Click "OK" to see your final result')) {
         timer = true;
         return;
