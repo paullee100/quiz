@@ -39,7 +39,8 @@ function chooseWhatToQuizOn() {
     createStartButtons('Definitions', 0);
     createStartButtons('Exponents', 1);
     createStartButtons('Prime Numbers', 2);
-    createStartButtons('PEMDAS', 3);
+    // createStartButtons('PEMDAS', 3);
+    createStartButtons('Division', 3);
     createStartButtons('Factors', 4);
 }
 
@@ -131,10 +132,6 @@ function createTimeTable() {
                 addHighlightedRowAndColumnsByTab(selectedCell);
             }, 0);
         }
-    });
-
-    document.addEventListener('blur', function(event) {
-        alert("Hello!");
     });
 
     // When the user manually clicks on a cell.
@@ -311,9 +308,12 @@ function showQuestion(quizCategory) {
             break;
         case "shortAnswer":
             const input = document.createElement("input");
+            input.id = "answerBox";
             input.placeholder = "Type your answer in this box"
+            input.setAttribute('autocomplete', 'off');
             input.classList.add("inp");
             const button = document.createElement("button");
+            button.id = "answerConfirm";
             button.innerHTML = "Confirm";
             button.disabled = true;
             button.classList.add("btn");
@@ -330,10 +330,22 @@ function showQuestion(quizCategory) {
                 }
             });
             button.addEventListener("click", (e) => checkAnswer(e, input));
+
+            document.addEventListener("keydown", pressEnter);
             break;
     }
     // Add the explanation to the answer to the current question.
     explanation.innerHTML = currentQuestion.explanation;
+}
+
+function pressEnter(event) {
+    if (event.key === "Enter") {
+        const input = document.getElementById("answerBox");
+        const button = document.getElementById("answerConfirm");
+        if (input.value.length > 0) {
+            checkAnswer(button.dataset.answerlist.split(","), input);
+        }
+    }
 }
 
 // Reset the current state to allow the content to be filled with the next question
@@ -343,6 +355,8 @@ function resetState() {
     while (answerButtons.firstChild) {
         answerButtons.removeChild(answerButtons.firstChild);
     }
+
+    document.removeEventListener("keydown", pressEnter);
 }
 
 // When selecting an answer in a multiple choice question
@@ -375,8 +389,13 @@ function selectAnswer(e) {
 
 // When selecting an answer in a short answer question
 function checkAnswer(e, textBox) {
-    const confirmBtn = e.target;
-    const answers = confirmBtn.dataset.answerlist.split(",");
+    let answers;
+    if (Array.isArray(e)) {
+        answers = e;
+    } else {
+        const confirmBtn = e.target;
+        answers = confirmBtn.dataset.answerlist.split(",");
+    }
     const total = answers.length;
     let correctTerms = 0;
 
