@@ -79,6 +79,9 @@ function startQuiz(quizNum) {
 }
 
 function createTimeTable() {
+    const date = new Date()
+    writeSessionData(date.toLocaleTimeString(), date.toLocaleDateString().replaceAll('/', '-'), -1);
+
     resetState();
     const ROW = 13,
           COL = 13

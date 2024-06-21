@@ -19,6 +19,9 @@ const firebaseConfig = initializeApp({
 // Initialize Firebase
 export function writeSessionData(time, day, lesson) {
     switch(lesson) {
+        case -1:
+            lesson = "Multiplication Table"
+            break
         case 0:
             lesson = "Definition"
             break
