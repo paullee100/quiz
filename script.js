@@ -3,6 +3,7 @@ import { exponentQuestions } from "./exponents.js";
 import { primeNumberQuestions } from "./primeNumbers.js";
 import { pemdasQuestions } from "./pemdas.js";
 import { factorQuestions } from "./factors.js";
+import { writeSessionData } from "./firebase.js";
 
 const app = document.getElementById("app");
 const questionElement = document.getElementById("question");
@@ -19,8 +20,7 @@ let totalQuestions = 0;
 
 // User decides which quiz they want to take
 // All the current available quizzes
-const questions = []
-questions.push(definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions);
+const questions = [definitionQuestions, exponentQuestions, primeNumberQuestions, pemdasQuestions, factorQuestions]
 
 // Keep track of what quiz they are on.
 let quizId;
@@ -56,7 +56,14 @@ function createStartButtons(quizName, quizNum) {
     answerButtons.appendChild(quizButton)
 }
 
+function getCurrentSession() {
+    const date = new Date();
+    
+}
+
 function startQuiz(quizNum) {
+    const date = new Date()
+    writeSessionData(date.toLocaleTimeString(), date.toLocaleDateString().replaceAll('/', '-'), quizNum);
     includeAddEventListenerToNextButton();
     quizId = quizNum;
     currentQuestionIndex = 0;
